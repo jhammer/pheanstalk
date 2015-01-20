@@ -40,6 +40,7 @@ class NativeSocket implements Socket
             throw new Exception\ConnectionException($errno, $errstr . " (connecting to $host:$port)");
         }
 
+        socket_set_option( socket_import_stream( $this->_socket ), SOL_SOCKET, SO_KEEPALIVE, 1 );
         $this->_wrapper()
             ->stream_set_timeout($this->_socket, self::SOCKET_TIMEOUT);
     }
