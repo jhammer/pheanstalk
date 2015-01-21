@@ -54,6 +54,12 @@ interface Command
     public function getDataLength();
 
     /**
+     * How long to wait for a response, or null to wait indefinitely
+     * @return int
+     */
+    public function getResponseTimeout();
+
+    /**
      * The response parser for the command.
      * @return ResponseParser
      */

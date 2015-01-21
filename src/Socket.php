@@ -32,5 +32,5 @@ interface Socket
      *
      * @param int
      */
-    public function getLine($length = null);
+    public function getLine($timeout = null, $length = null);
 }

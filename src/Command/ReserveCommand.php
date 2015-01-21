@@ -41,6 +41,15 @@ class ReserveCommand
             'reserve';
     }
 
+    /**
+     * How long to wait for a response, or null to wait indefinitely
+     * @return int
+     */
+    public function getResponseTimeout()
+	{
+		return isset($this->_timeout) ? $this->_timeout : null;
+	}
+
     /* (non-phpdoc)
      * @see ResponseParser::parseRespose()
      */

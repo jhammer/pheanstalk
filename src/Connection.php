@@ -15,7 +15,7 @@ class Connection
 {
     const CRLF = "\r\n";
     const CRLF_LENGTH = 2;
-    const DEFAULT_CONNECT_TIMEOUT = 2;
+    const DEFAULT_CONNECT_TIMEOUT = 60;
 
     // responses which are global errors, mapped to their exception short-names
     private static $_errorResponses = array(
@@ -84,7 +84,9 @@ class Connection
 
         $socket->write($to_send);
 
-        $responseLine = $socket->getLine();
+		// try and protect against connections that have died (network partition, server panic, etc.)
+		$timeout = $command->getResponseTimeout() !== null ? 2 * $command->getResponseTimeout() : null;
+        $responseLine = $socket->getLine($timeout);
         $responseName = preg_replace('#^(\S+).*$#s', '$1', $responseLine);
 
         if (isset(self::$_errorResponses[$responseName])) {

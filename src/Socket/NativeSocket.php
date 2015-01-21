@@ -40,7 +40,6 @@ class NativeSocket implements Socket
             throw new Exception\ConnectionException($errno, $errstr . " (connecting to $host:$port)");
         }
 
-        socket_set_option( socket_import_stream( $this->_socket ), SOL_SOCKET, SO_KEEPALIVE, 1 );
         $this->_wrapper()
             ->stream_set_timeout($this->_socket, self::SOCKET_TIMEOUT);
     }
@@ -93,8 +92,10 @@ class NativeSocket implements Socket
     /* (non-phpdoc)
      * @see Socket::write()
      */
-    public function getLine($length = null)
+    public function getLine($timeout = null, $length = null)
     {
+		$start = time();
+		
         do {
             $data = isset($length) ?
                 $this->_wrapper()->fgets($this->_socket, $length) :
@@ -103,6 +104,13 @@ class NativeSocket implements Socket
             if ($this->_wrapper()->feof($this->_socket)) {
                 throw new Exception\SocketException("Socket closed by server!");
             }
+			
+			if ($data === false && $timeout !== null && time() - $start >= $timeout) {
+				throw new Exception\SocketException("Socket read timeout!");
+			}
+			else if ($data !== false) {
+				$start = time();
+			}
         } while ($data === false);
 
         return rtrim($data);

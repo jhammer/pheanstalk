@@ -15,6 +15,8 @@ use Pheanstalk\Response;
 abstract class AbstractCommand
     implements Command
 {
+    const DEFAULT_RESPONSE_TIMEOUT = 60;
+    
     /* (non-phpdoc)
      * @see Command::hasData()
      */
@@ -49,6 +51,15 @@ abstract class AbstractCommand
         // b) override this getResponseParser method
         return $this;
     }
+
+    /**
+     * How long to wait for a response, or null to wait indefinitely
+     * @return int
+     */
+    public function getResponseTimeout()
+	{
+		return self::DEFAULT_RESPONSE_TIMEOUT;
+	}
 
     /**
      * The string representation of the object.
